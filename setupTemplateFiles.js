@@ -5,6 +5,22 @@ const bucketRef = admin.storage().bucket(process.env.STORAGE_BUCKET);
 
 const certTemplateFileNames = [
     'certificateTemplates/SB Template Participants.png',
+    'certificateTemplates/SB Template Coordinators.png',
+    'certificateTemplates/SB Template Volunteers.png',
+    'certificateTemplates/SB Template Winners.png',
+    'certificateTemplates/CS Template Winners.png',
+    'certificateTemplates/CS Template Participants.png',
+    'certificateTemplates/IAS Template Participants.png',
+    'certificateTemplates/IAS Template Winners.png',
+    'certificateTemplates/WIE Template Participants.png',
+    'certificateTemplates/WIE Template Winners.png',
+    'certificateTemplates/Excelsior21SB Template Participants.png',
+    'certificateTemplates/Excelsior21FROMSB Template Participants.png',
+    'certificateTemplates/Excelsior21CS Template Participants.png',
+    'certificateTemplates/Excelsior21FROMCS Template Participants.png',
+    'certificateTemplates/Excelsior21IAS Template Participants.png',
+    'certificateTemplates/Excelsior21FROMIAS Template Participants.png',
+    'certificateTemplates/Excelsior21SB Template Winners.png',
 ];
 
 const csvTemplateFileNames = [

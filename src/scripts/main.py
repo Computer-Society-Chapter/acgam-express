@@ -44,9 +44,12 @@ if __name__ == '__main__':
             college_names = recipient_df['Institution Name'].to_list()
             if recipient_names and recipient_emails and college_names:
                 if len(recipient_names) == len(recipient_emails) == len(college_names):
-                    if is_winner and 'Position' in recipient_df.columns:
-                        winner_positions = recipient_df['Position'].to_list()
-                        if not (len(recipient_names) == len(winner_positions)):
+                    if is_winner:
+                        if 'Position' in recipient_df.columns:
+                            winner_positions = recipient_df['Position'].to_list()
+                            if not (len(recipient_names) == len(winner_positions)):
+                                throw_csv_poorly_formatted(csv_file_path)
+                        else:
                             throw_csv_poorly_formatted(csv_file_path)
                 else:
                     throw_csv_poorly_formatted(csv_file_path)
@@ -73,6 +76,14 @@ if __name__ == '__main__':
     purpose = "{} - {}".format(cert.event_name, cert.certificate_title)
     email_error_list = []
 
+#     index = 0
+#     for recipient_name, recipient_email, college_name in zip(recipient_names, recipient_emails, college_names):
+#         cert_path = cert.create(recipient_name, college_name, None if not is_winner else winner_positions[index], dir_name, event_id, recipient_email)
+#         error_email = mail(cert, recipient_email)
+#         if error_email is not None:
+#             email_error_list.append(error_email)
+#         index += 1
+
     try:
         index = 0
         for recipient_name, recipient_email, college_name in zip(recipient_names, recipient_emails, college_names):
@@ -86,17 +97,37 @@ if __name__ == '__main__':
         sys.stdout.flush()
         if os.path.exists(cert_gen_dir_path):
             if len(os.listdir(cert_gen_dir_path)) != 0:
-                notify(cert_gen_dir_path, auth_user_email, auth_user_name, purpose, False, action_time, email_error_list)
-                # TODO: Complete this
+                try:
+                    notify(cert_gen_dir_path, auth_user_email, auth_user_name, purpose, False, action_time, email_error_list, csv_file_path)
+                except Exception as e:
+                    shutil.rmtree(cert_gen_dir_path)
+                    os.remove(csv_file_path)
+                    sys.stdout.write("There was an issue.")
+                    sys.stdout.flush()
+                    sys.stdout.write("exit")
+                    sys.stdout.flush()
+                    exit()
                 shutil.rmtree(cert_gen_dir_path)
                 os.remove(csv_file_path)
                 sys.stdout.flush()
+            else:
+                os.rmdir(cert_gen_dir_path)
+        os.remove(csv_file_path)
+        sys.stdout.write("There was an issue.")
         sys.stdout.flush()
         sys.stdout.write("exit")
         sys.stdout.flush()
         exit()
 
-    notify(cert_gen_dir_path, auth_user_email, auth_user_name, purpose, True, action_time, email_error_list)
+    try:
+        notify(cert_gen_dir_path, auth_user_email, auth_user_name, purpose, True, action_time, email_error_list, csv_file_path)
+    except Exception as e:
+        shutil.rmtree(cert_gen_dir_path)
+        os.remove(csv_file_path)
+        sys.stdout.flush()
+        sys.stdout.write("exit")
+        sys.stdout.flush()
+        exit()
     shutil.rmtree(os.path.join(cert_gen_dir_path, "..", "zipped"))
     os.remove(csv_file_path)
     shutil.rmtree(cert_gen_dir_path)

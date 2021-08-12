@@ -19,7 +19,14 @@ const resolveTemplateName = (templateName) => {
         "IAS Template - Participants",
         "IAS Template - Winners",
         "WIE Template - Participants",
-        "WIE Template - Winners"
+        "WIE Template - Winners",
+        "Excelsior21SB Template - Participants",
+        "Excelsior21FROMSB Template - Participants",
+        "Excelsior21CS Template - Participants",
+        "Excelsior21FROMCS Template - Participants",
+        "Excelsior21IAS Template - Participants",
+        "Excelsior21FROMIAS Template - Participants",
+        "Excelsior21SB Template - Winners"
     ];
 
     if (validTemplateTypes.includes(templateName)) {
@@ -37,6 +44,10 @@ const resolveTemplateName = (templateName) => {
 
 
 sendRouter.post('/', (req, res) => {
+    res.setTimeout(300000, () => {
+        console.log("/send Timeout");
+        res.send(408);
+    })
     const {eventID, templateName} = req.body;
     const resolvedTemplateName = resolveTemplateName(templateName);
     if (resolvedTemplateName === false) {
@@ -61,7 +72,7 @@ sendRouter.post('/', (req, res) => {
                                 pyProcess.stdout.on('data', (data) => {
                                     data = data.toString();
                                     console.log(data);
-                                    if (["CSV File Poorly Formatted", "Certificate Template Not Found"].includes(data)) {
+                                    if (["CSV File Poorly Formatted", "Certificate Template Not Found", "There was an issue."].includes(data)) {
                                         res.status(200).send(data);
                                     }
                                     else if (data === 'exit') {
@@ -96,7 +107,6 @@ sendRouter.post('/', (req, res) => {
                 res.status(500).send("There was a problem while Processing, please contact Website admin.")
             })
     }
-
 });
 
 sendRouter.get('*', (req, res) => {
